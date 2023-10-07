@@ -69,7 +69,7 @@ async function handleSubmit(event: Event) {
             <!-- Image url -->
             <div class="flex gap-2 mb-4">
                 <label for="image_url">Image url</label>
-                <input required type="text" name="image_url" id="image_url" placeholder="Image url of the game"
+                <input type="text" name="image_url" id="image_url" placeholder="Image url of the game"
                     :value="game.image_url">
             </div>
 
