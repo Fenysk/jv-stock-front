@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from 'vue';
 import { getGamesInStock } from '../services/games';
-import Game from '../components/Stock/Game.vue';
+import Game from '../components/Home/GameCard.vue';
+import LoadingGame from '../components/Home/LoadingGameCard.vue';
 
 const gamesInStock = ref<any>([]);
 
@@ -24,20 +25,22 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div>
+  <main id="Home" class="container mx-auto">
     <h1>Home</h1>
 
     <section class="sales">
       <h2>Jeux en stock</h2>
 
-      <ul v-if="gamesInStock.length" class="flex flex-col gap-4">
-        <li v-for="game in gamesInStock" :key="game.id">
-          <Game :game="game" />
-        </li>
-      </ul>
+      <div id="games-list">
+        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 gap-8">
+          <li v-for="game in gamesInStock" :key="game.id">
+            <Game :game="game" />
+          </li>
+          <LoadingGame v-if="gamesInStock.length === 0" v-for="index in 10" :key="index" />
+        </ul>
+      </div>
 
-      <p v-else>Aucun jeu en stock</p>
 
     </section>
-  </div>
+  </main>
 </template>
