@@ -14,6 +14,7 @@ export async function getAllGames(): Promise<any> {
 
 export async function getGamesInStock(): Promise<any> {
     try {
+
         const response = await axios.get(`${config.api.url}/game/get/stock`);
         const games = response.data;
 

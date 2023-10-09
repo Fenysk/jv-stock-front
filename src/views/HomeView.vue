@@ -18,6 +18,26 @@ async function fetchGamesInStock() {
   }
 }
 
+const searchInput = ref<string>('');
+
+function searchGames(search?: string) {
+
+  if (!search) {
+    fetchGamesInStock();
+    return;
+  }
+
+  gamesInStock.value = gamesInStock.value.filter((game: any) => {
+    return game.name.toLowerCase().includes(search.toLowerCase()) ||
+      game.console.toLowerCase().includes(search.toLowerCase())
+  });
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  fetchGamesInStock();
+}
+
 onBeforeMount(async () => {
   await fetchGamesInStock();
 });
@@ -31,8 +51,13 @@ onBeforeMount(async () => {
     <section class="sales">
       <h2>Jeux en stock</h2>
 
+      <div id="search" class="flex gap-2">
+        <input @input="searchGames(searchInput)" v-model="searchInput" type="text" placeholder="Rechercher un jeu" />
+        <button v-if="searchInput" @click="clearSearch">❌</button>
+      </div>
+
       <div id="games-list">
-        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
+        <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
           <li v-for="game in gamesInStock" :key="game.id">
             <Game :game="game" />
           </li>

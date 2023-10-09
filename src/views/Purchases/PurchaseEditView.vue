@@ -10,6 +10,7 @@ const router = useRouter();
 
 const inputContent = ref<string>('');
 const contents = ref<string[]>([]);
+const selectedGameId = ref<number | null>(null);
 
 const purchase = ref<any>({});
 
@@ -26,6 +27,7 @@ async function fetchGames() {
 async function fetchPurchase(id: number) {
     purchase.value = await getPurchaseById(id);
     contents.value = purchase.value.content;
+    selectedGameId.value = purchase.value.game_id;
 }
 
 function searchGames() {
@@ -83,7 +85,7 @@ async function handleSubmit(event: Event) {
             <div class="flex gap-2 mb-4">
                 <label for="game">Game</label>
                 <input @input="searchGames" v-model="search" type="text" placeholder="Search for a game">
-                <select v-if="games.length" name="game_id" id="game_id" required>
+                <select v-if="games.length" name="game_id" id="game_id" required v-model="selectedGameId">
                     <option v-for="game in games" :key="game.id" :value="game.id">{{ game.name }}</option>
                 </select>
                 <span v-else>No game found</span>

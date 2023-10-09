@@ -34,7 +34,7 @@ const toggleMenu = () => {
             </div>
             <ul class="
             absolute top-16 left-0 flex flex-col items-start justify-center w-full gap-8 text-2xl bg-orange-400 font-semibold text-center overflow-hidden
-            sm:static sm:flex-row sm:top-0 sm:left-auto sm:w-auto sm:gap-24 sm:px-0 sm:py-0 sm:text-base sm:bg-transparent sm:font-normal sm:justify-end sm:gap-6 sm:h-auto
+            sm:static sm:flex-row sm:top-0 sm:left-auto sm:w-auto sm:px-0 sm:py-0 sm:text-base sm:bg-transparent sm:font-normal sm:justify-end sm:gap-6 sm:h-auto
             "
             :class="(isMenuOpen) ? 'h-[50vh] p-24' : 'h-0'"
             >

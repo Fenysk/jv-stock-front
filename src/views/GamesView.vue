@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Game from '../components/Games/Game.vue';
+import Game from '../components/Games/GameCard.vue';
 
 import { ref, onBeforeMount } from 'vue';
 import { getAllGames } from '../services/games';
