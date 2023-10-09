@@ -78,8 +78,6 @@ async function handleSubmit(event: Event) {
     <div>
         <h1>Edit purchase</h1>
 
-        <pre>{{ purchase }}</pre>
-
         <form @submit.prevent="handleSubmit">
             <!-- Search game -->
             <div class="flex gap-2 mb-4">

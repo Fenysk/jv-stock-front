@@ -32,7 +32,7 @@ onBeforeMount(async () => {
       <h2>Jeux en stock</h2>
 
       <div id="games-list">
-        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 gap-8">
+        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
           <li v-for="game in gamesInStock" :key="game.id">
             <Game :game="game" />
           </li>

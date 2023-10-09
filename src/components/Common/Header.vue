@@ -9,7 +9,7 @@ const toggleMenu = () => {
 </script>
 
 <template>
-    <header class="w-full bg-orange-400">
+    <header class="w-full bg-orange-400 z-50">
         <nav class="
         flex items-end justify-between p-4 gap-6
         sm:justify-center sm:gap-16
