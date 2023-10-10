@@ -6,6 +6,12 @@ const isMenuOpen = ref(false);
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 640) {
+        isMenuOpen.value = false;
+    }
+});
 </script>
 
 <template>
@@ -35,20 +41,22 @@ const toggleMenu = () => {
             <ul class="
             absolute top-16 left-0 flex flex-col items-start justify-center w-full gap-8 text-2xl bg-orange-400 font-semibold text-center overflow-hidden
             sm:static sm:flex-row sm:top-0 sm:left-auto sm:w-auto sm:px-0 sm:py-0 sm:text-base sm:bg-transparent sm:font-normal sm:justify-end sm:gap-6 sm:h-auto
-            "
-            :class="(isMenuOpen) ? 'h-[50vh] p-24' : 'h-0'"
-            >
+            " :class="(isMenuOpen) ? 'h-[50vh] p-24' : 'h-0'">
                 <li>
-                    <router-link @click="toggleMenu" :to="{ name: 'Home' }" class="hover:border-b border-black">Home</router-link>
+                    <router-link @click="toggleMenu" :to="{ name: 'Home' }"
+                        class="hover:border-b border-black">Home</router-link>
                 </li>
                 <li>
-                    <router-link @click="toggleMenu" :to="{ name: 'Games' }" class="hover:border-b border-black">Games</router-link>
+                    <router-link @click="toggleMenu" :to="{ name: 'Games' }"
+                        class="hover:border-b border-black">Games</router-link>
                 </li>
                 <li>
-                    <router-link @click="toggleMenu" :to="{ name: 'Purchases' }" class="hover:border-b border-black">Purchases</router-link>
+                    <router-link @click="toggleMenu" :to="{ name: 'Purchases' }"
+                        class="hover:border-b border-black">Purchases</router-link>
                 </li>
                 <li>
-                    <router-link @click="toggleMenu" :to="{ name: 'Sales' }" class="hover:border-b border-black">Sales</router-link>
+                    <router-link @click="toggleMenu" :to="{ name: 'Sales' }"
+                        class="hover:border-b border-black">Sales</router-link>
                 </li>
             </ul>
         </nav>

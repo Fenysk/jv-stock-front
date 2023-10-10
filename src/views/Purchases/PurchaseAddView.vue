@@ -11,8 +11,11 @@ const router = useRouter();
 const inputContent = ref<string>('');
 const contents = ref<string[]>([]);
 
+const game_id = ref<number | null>(null);
+
 onBeforeMount(async () => {
     await fetchGames();
+    game_id.value = Number(router.currentRoute.value.params.id)
 });
 
 async function fetchGames() {
@@ -71,7 +74,8 @@ async function handleSubmit(event: Event) {
                 <label for="game">Game</label>
                 <input @input="searchGames" v-model="search" type="text" placeholder="Search for a game">
                 <select v-if="games.length" name="game_id" id="game_id" required>
-                    <option v-for="game in games" :key="game.id" :value="game.id">{{ game.name }}</option>
+                    <option :selected="game.id === game_id"
+                    v-for="game in games" :key="game.id" :value="game.id">{{ game.name }}</option>
                 </select>
                 <span v-else>No game found</span>
             </div>

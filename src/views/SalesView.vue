@@ -1,12 +1,44 @@
 <script setup lang="ts">
-import Sale from '../components/Sales/Sale.vue';
+import Sale from '../components/Sales/GameCard.vue';
+import LoadingGame from '../components/Common/LoadingGameCard.vue';
 import { ref, onBeforeMount } from 'vue';
 import { getSales } from '../services/sales';
 
+const isLoading = ref<boolean>(false);
+const isError = ref<boolean>(false);
 const sales = ref<any>([]);
 
 async function fetchSales() {
-    sales.value = await getSales();
+    try {
+        isLoading.value = true;
+        sales.value = await getSales();
+        isLoading.value = false;
+        isError.value = false;
+    } catch (error: any) {
+        isError.value = true;
+        isLoading.value = false;
+        throw error.message;
+    }
+}
+
+const searchInput = ref<string>('');
+
+function searchSales(search?: string) {
+
+    if (!search) {
+        fetchSales();
+        return;
+    }
+
+    sales.value = sales.value.filter((sale: any) => {
+        return sale.Purchase.Game.name.toLowerCase().includes(search.toLowerCase()) ||
+            sale.Purchase.Game.console.toLowerCase().includes(search.toLowerCase())
+    });
+}
+
+function clearSearch() {
+    searchInput.value = '';
+    fetchSales();
 }
 
 onBeforeMount(async () => {
@@ -16,14 +48,31 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div>
+    <main id="Sales" class="container mx-auto">
         <h1>Sales</h1>
 
-        <ul v-if="sales.length > 0" class="flex flex-col gap-4">
-            <li v-for="sale in sales" :key="sale.id">
-                <Sale :sale="sale" />
-            </li>
-        </ul>
-        <p v-else>No sales found.</p>
-    </div>
+        <div id="controls" class="flex flex-row flex-wrap justify-between items-center gap-4">
+            <div id="search" class="flex gap-2">
+                <input @input="searchSales(searchInput)" v-model="searchInput" type="text"
+                    placeholder="Rechercher une vente" />
+                <button v-if="searchInput" @click="clearSearch">❌</button>
+            </div>
+        </div>
+
+        <div id="games-list">
+            <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
+                <li v-for="sale in sales" :key="sale.id">
+                    <Sale :sale="sale" />
+                </li>
+                <li v-if="isLoading" v-for="n in 10" :key="n">
+                    <LoadingGame />
+                </li>
+            </ul>
+            <div v-if="sales.length === 0">
+                <p v-if="!isLoading && !isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">No
+                    sales in stock</p>
+                <p v-if="isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">Can't fetch games</p>
+            </div>
+        </div>
+    </main>
 </template>

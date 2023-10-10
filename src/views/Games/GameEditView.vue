@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { updateGame, getGameById } from '../../services/games';
+import { updateGame, getGameById, deleteGame } from '../../services/games';
 import { uploadImage } from '../../services/upload';
 import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
@@ -50,6 +50,20 @@ async function handleSubmit(event: Event) {
         alert(error.message);
     }
 
+}
+
+async function handleDelete() {
+    if (!confirm('Are you sure you want to delete this game?')) {
+        return;
+    }
+
+    try {
+        await deleteGame(game.value.id);
+        alert('Game deleted');
+        router.push({ name: 'Games' });
+    } catch (error: any) {
+        alert(error.message)
+    }
 }
 </script>
 
@@ -117,6 +131,7 @@ async function handleSubmit(event: Event) {
             </div>
 
             <button type="submit">Save game</button>
+            <button type="button" @click.prevent="handleDelete">Delete game</button>
         </form>
     </div>
 </template>

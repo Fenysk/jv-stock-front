@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { updatePurchase, getPurchaseById } from '../../services/purchases';
+import { updatePurchase, getPurchaseById, deletePurchase } from '../../services/purchases';
 import { getAllGames } from '../../services/games';
 import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
@@ -72,7 +72,20 @@ async function handleSubmit(event: Event) {
     } catch (error: any) {
         alert(error.message);
     }
+}
 
+async function handleDelete() {
+    if (!confirm('Are you sure you want to delete this purchase ?')) {
+        return;
+    }
+
+    try {
+        await deletePurchase(purchase.value.id);
+        alert('Purchase deleted');
+        router.push({ name: 'Purchases' });
+    } catch (error: any) {
+        alert(error.message)
+    }
 }
 </script>
 
@@ -134,6 +147,7 @@ async function handleSubmit(event: Event) {
             </div>
 
             <button type="submit">Save purchase</button>
+            <button type="button" @click.prevent="handleDelete">Delete purchase</button>
         </form>
     </div>
 </template>

@@ -2,7 +2,7 @@
 </script>
 
 <template>
-    <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-32 shadow-sm border border-orange-200">
+    <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-40 shadow-sm border border-orange-200">
 
         <div class="animate-pulse rounded-md flex w-1/4 h-full"> <!-- Left side -->
             <div class="bg-orange-300 h-full flex items-center justify-center w-full">

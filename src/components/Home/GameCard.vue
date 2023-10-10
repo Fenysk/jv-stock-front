@@ -12,24 +12,23 @@ const props = defineProps({
 </script>
 
 <template>
-    <router-link :to="{ name: 'EditPurchase', params: { id: props.game.purchase_id } }">
-        <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-32 shadow-sm border border-orange-200">
+    <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-full shadow-sm border border-orange-200">
 
-            <div class="rounded-md flex w-1/4 h-full"> <!-- Left side -->
-                <img :src="`${config.api.url}/${props.game.image_url}`" alt="Game image" class="object-cover w-full">
-            </div>
+        <div class="rounded-md flex w-1/4 h-full"> <!-- Left side -->
+            <img :src="`${config.api.url}/${props.game.image_url}`" alt="Game image" class="object-cover w-full h-full">
+        </div>
 
-            <div class="flex flex-row justify-between p-2 w-3/4"> <!-- Right side -->
+        <div class="flex flex-col justify-between w-3/4 p-2"> <!-- Right side -->
+            <div class="flex flex-row justify-between">
+                <div id="details" class="flex flex-col max-w-[70%]">
+                    <h3 class="text-lg font-semibold truncate">{{ props.game.name }}</h3>
 
-                <div id="details" class="flex flex-col">
-                    <h3 class="text-lg font-semibold">{{ props.game.name }}</h3>
-
-                    <p>Edition {{ props.game.edition }}</p>
-                    <p>Etat : {{ props.game.state }}</p>
-                    <p>{{ props.game.console }}</p>
+                    <p class="text-sm">Edition {{ props.game.edition }}<br>
+                        Etat : {{ props.game.state }}<br>
+                        {{ props.game.console }}</p>
                 </div>
 
-                <div id="prices" class="flex flex-col gap-1 items-end">
+                <div id="prices" class="flex flex-col gap-1 items-end flex-none">
                     <p class="bg-red-400    text-gray-600 px-2 py-1 rounded-lg font-semibold text-sm">- {{
                         props.game.purchased_price }} €</p>
                     <p class="bg-yellow-400 text-gray-600 px-2 py-1 rounded-lg font-semibold text-sm">+ {{
@@ -37,8 +36,13 @@ const props = defineProps({
                     <p class="bg-green-400  px-2 py-1 rounded-lg font-semibold text-sm">= {{ props.game.estimated_price -
                         props.game.purchased_price }} €</p>
                 </div>
-
             </div>
-        </article>
-    </router-link>
+
+            <div id="controls" class="flex flex-row justify-end gap-1">
+                <router-link :to="{ name: 'AddSale', params: { id: props.game.purchase_id } }"
+                    class="bg-white whitespace-nowrap border px-2 hover:px-3 transition-all py-1 rounded-lg font-semibold text-sm">Marquer
+                    comme vendu</router-link>
+            </div>
+        </div>
+    </article>
 </template>

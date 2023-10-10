@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSaleById, updateSaleSoldedPrice } from '../../services/sales';
+import { getSaleById, updateSaleSoldedPrice, deleteSale } from '../../services/sales';
 import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
 
@@ -33,6 +33,20 @@ async function handleSubmit(event: Event) {
         alert(error.message);
     }
 }
+
+async function handleDelete() {
+    if (!confirm('Are you sure you want to delete this sale ?')) {
+        return;
+    }
+
+    try {
+        await deleteSale(sale.value.id);
+        alert('Sale deleted');
+        router.push({ name: 'Sales' });
+    } catch (error: any) {
+        alert(error.message)
+    }
+}
 </script>
 
 <template>
@@ -49,6 +63,7 @@ async function handleSubmit(event: Event) {
             </div>
 
             <button type="submit">Save sale</button>
+            <button type="button" @click.prevent="handleDelete">Delete sale</button>
         </form>
     </div>
 </template>

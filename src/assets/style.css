@@ -14,17 +14,23 @@ h2 {
     margin: 0.6rem 0;
 }
 
-button {
-    cursor: pointer;
+input {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     border: black 1px solid;
     font-weight: 500;
 }
 
-input {
+select {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     border: black 1px solid;
     font-weight: 500;
+}
+
+input[type="file"] {
+    padding: 8px 0;
+    border: none;
+    border-radius: 0;
+    font-weight: 400;
 }

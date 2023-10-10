@@ -2,17 +2,24 @@
 import { ref, onBeforeMount } from 'vue';
 import { getGamesInStock } from '../services/games';
 import Game from '../components/Home/GameCard.vue';
-import LoadingGame from '../components/Home/LoadingGameCard.vue';
+import LoadingGame from '../components/Common/LoadingGameCard.vue';
 
+const isLoading = ref<boolean>(false);
+const isError = ref<boolean>(false);
 const gamesInStock = ref<any>([]);
 
 async function fetchGamesInStock() {
   try {
 
+    isLoading.value = true;
     gamesInStock.value = await getGamesInStock()
+    isLoading.value = false;
+    isError.value = false;
 
   } catch (error: any) {
 
+    isLoading.value = false;
+    isError.value = true;
     throw error.message;
 
   }
@@ -49,7 +56,7 @@ onBeforeMount(async () => {
     <h1>Home</h1>
 
     <section class="sales">
-      <h2>Jeux en stock</h2>
+      <h2>Games in stock</h2>
 
       <div id="search" class="flex gap-2">
         <input @input="searchGames(searchInput)" v-model="searchInput" type="text" placeholder="Rechercher un jeu" />
@@ -61,8 +68,15 @@ onBeforeMount(async () => {
           <li v-for="game in gamesInStock" :key="game.id">
             <Game :game="game" />
           </li>
-          <LoadingGame v-if="gamesInStock.length === 0" v-for="index in 10" :key="index" />
+          <li v-if="isLoading" v-for="n in 10" :key="n">
+            <LoadingGame />
+          </li>
         </ul>
+        <div v-if="gamesInStock.length === 0">
+          <p v-if="!isLoading && !isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">No
+            games in stock</p>
+          <p v-if="isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">Can't fetch games</p>
+        </div>
       </div>
 
 
