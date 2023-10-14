@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { config } from '../config';
+import { api_url } from '../config';
 
 export async function getAllGames(): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/game/get/all`);
+        const response = await axios.get(`${api_url}/game/get/all`);
         const games = response.data;
 
         return games;
@@ -15,7 +15,7 @@ export async function getAllGames(): Promise<any> {
 export async function getGamesInStock(): Promise<any> {
     try {
 
-        const response = await axios.get(`${config.api.url}/game/get/stock`);
+        const response = await axios.get(`${api_url}/game/get/stock`);
         const games = response.data;
 
         return games;
@@ -26,7 +26,7 @@ export async function getGamesInStock(): Promise<any> {
 
 export async function getGameById(id: number): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/game/get/${id}`);
+        const response = await axios.get(`${api_url}/game/get/${id}`);
         const game = response.data;
 
         return game;
@@ -37,7 +37,7 @@ export async function getGameById(id: number): Promise<any> {
 
 export async function createGame(game: any): Promise<any> {
     try {
-        const response = await axios.post(`${config.api.url}/game/create`, game);
+        const response = await axios.post(`${api_url}/game/create`, game);
         const newGame = response.data;
 
         return newGame;
@@ -48,7 +48,7 @@ export async function createGame(game: any): Promise<any> {
 
 export async function updateGame(game: any): Promise<any> {
     try {
-        const response = await axios.put(`${config.api.url}/game/update/${game.id}`, game);
+        const response = await axios.put(`${api_url}/game/update/${game.id}`, game);
         const updatedGame = response.data;
 
         return updatedGame;
@@ -59,7 +59,7 @@ export async function updateGame(game: any): Promise<any> {
 
 export async function deleteGame(id: string): Promise<any> {
     try {
-        const response = await axios.delete(`${config.api.url}/game/delete/${id}`);
+        const response = await axios.delete(`${api_url}/game/delete/${id}`);
         const deletedGame = response.data;
 
         return deletedGame;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { config } from '../../config';
+import { api_url } from '../../config';
 
 const props = defineProps({
     sale: {
@@ -26,7 +26,7 @@ props.sale.created_at = new Date(props.sale.created_at).toLocaleDateString('fr-F
     <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-full shadow-sm border border-orange-200">
 
         <div class="rounded-md flex w-1/4 h-full"> <!-- Left side -->
-            <img :src="`${config.api.url}/${props.sale.Purchase.Game.image_url}`" alt="Game image"
+            <img :src="`${api_url}/${props.sale.Purchase.Game.image_url}`" alt="Game image"
                 class="object-cover w-full h-full">
         </div>
 

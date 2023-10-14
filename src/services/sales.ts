@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { config } from '../config';
+import { api_url } from '../config';
 
 export async function getSales(): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/sale/get/all`);
+        const response = await axios.get(`${api_url}/sale/get/all`);
         const sales = response.data;
 
         return sales;
@@ -14,7 +14,7 @@ export async function getSales(): Promise<any> {
 
 export async function getSaleById(id: number): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/sale/get/${id}`);
+        const response = await axios.get(`${api_url}/sale/get/${id}`);
         const sale = response.data;
 
         return sale;
@@ -25,7 +25,7 @@ export async function getSaleById(id: number): Promise<any> {
 
 export async function createSale(sale: any): Promise<any> {
     try {
-        const response = await axios.post(`${config.api.url}/sale/create`, sale);
+        const response = await axios.post(`${api_url}/sale/create`, sale);
         const newSale = response.data;
 
         return newSale;
@@ -36,7 +36,7 @@ export async function createSale(sale: any): Promise<any> {
 
 export async function updateSaleSoldedPrice(id: number, solded_price: number): Promise<any> {
     try {
-        const response = await axios.put(`${config.api.url}/sale/update/solded_price/${id}`, { solded_price });
+        const response = await axios.put(`${api_url}/sale/update/solded_price/${id}`, { solded_price });
         const updatedSale = response.data;
 
         return updatedSale;
@@ -47,7 +47,7 @@ export async function updateSaleSoldedPrice(id: number, solded_price: number): P
 
 export async function deleteSale(id: string): Promise<any> {
     try {
-        const response = await axios.delete(`${config.api.url}/sale/delete/${id}`);
+        const response = await axios.delete(`${api_url}/sale/delete/${id}`);
         const deletedSale = response.data;
         
         return deletedSale;

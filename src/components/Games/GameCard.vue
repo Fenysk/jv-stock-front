@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { config } from '../../config';
+import { api_url } from '../../config';
 
 const props = defineProps({
     game: {
@@ -15,7 +15,7 @@ const props = defineProps({
     <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-full shadow-sm border border-orange-200">
 
         <div class="rounded-md flex w-1/4 h-full"> <!-- Left side -->
-            <img :src="`${config.api.url}/${props.game.image_url}`" alt="Game image" class="object-cover w-full h-full">
+            <img :src="`${api_url}/${props.game.image_url}`" alt="Game image" class="object-cover w-full h-full">
         </div>
 
         <div class="flex flex-col justify-between p-2 w-3/4"> <!-- Right side -->

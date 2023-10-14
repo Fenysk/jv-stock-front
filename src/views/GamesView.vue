@@ -70,7 +70,7 @@ onBeforeMount(async () => {
                 <li v-for="game in games" :key="game.id">
                     <Game :game="game" />
                 </li>
-                <li v-if="isLoading" v-for="n in 10" :key="n">
+                <li v-if="isLoading" v-for="num in 10" :key="num">
                     <LoadingGame />
                 </li>
             </ul>

@@ -66,8 +66,9 @@ async function handleSubmit(event: Event) {
 </script>
 
 <template>
-    <div>
+    <main id="AddPurchase" class="container mx-auto">
         <h1>Add new purchase</h1>
+        
         <form @submit.prevent="handleSubmit">
             <!-- Search game -->
             <div class="flex gap-2 mb-4">
@@ -123,5 +124,5 @@ async function handleSubmit(event: Event) {
 
             <button type="submit">Save purchase</button>
         </form>
-    </div>
+    </main>
 </template>

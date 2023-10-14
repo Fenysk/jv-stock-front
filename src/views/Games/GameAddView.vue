@@ -1,32 +1,48 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { createGame } from '../../services/games';
 import { uploadImage } from '../../services/upload';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-async function handleSubmit(event: Event) {
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
+const newGame = ref({
+    image_url: null,
+    name: '',
+    console: '',
+    edition: 'Standard',
+    region: '',
+    released_year: null,
+    barcode_data: 'NODATA'
+})
 
-    // Upload the image
+async function handleUploadImage(event: Event) {
     try {
-        const image = formData.get('image') as File;
+        const target = event.target as HTMLInputElement;
+
+        if (!target.files) {
+            newGame.value.image_url = null;
+            return;
+        }
+
+        const image = target.files[0];
+
+        if (!image) {
+            newGame.value.image_url = null;
+            return;
+        }
+
         const image_url = await uploadImage(image);
-        formData.set('image_url', image_url);
-        formData.delete('image');
+        newGame.value.image_url = image_url;
     } catch (error: any) {
         alert(error.message);
     }
+}
 
-    let newGame = {
-        ...Object.fromEntries(formData),
-        released_year: Number(formData.get('released_year'))
-    };
+async function handleSubmit() {
 
     try {
-        // Try to create the game
-        const game = await createGame(newGame);
+        const game = await createGame(newGame.value);
 
         if (game) {
             router.push({ name: 'Games' });
@@ -47,19 +63,20 @@ async function handleSubmit(event: Event) {
 
             <!-- Image -->
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="image">Game's picture</label>
+                <label class="text-xl font-semibold" for="image">Game's picture</label>
                 <input required type="file" accept="image/png, image/jpg, image/jpeg, image/gif, image/webp" name="image"
-                    id="image">
+                    id="image" @change="handleUploadImage">
+                <p v-if="newGame.image_url">File path : {{ newGame.image_url }}</p>
             </div>
 
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="name">Game's name</label>
-                <input required type="text" name="name" id="name" placeholder="Name of the game">
+                <label class="text-xl font-semibold" for="name">Game's name</label>
+                <input required type="text" name="name" id="name" placeholder="Name of the game" v-model="newGame.name">
             </div>
 
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="content">Console</label>
-                <select name="console" id="console" required>
+                <label class="text-xl font-semibold" for="content">Console</label>
+                <select name="console" id="console" required v-model="newGame.console">
                     <option value="Nintendo Switch">Nintendo Switch</option>
                     <option value="Nintendo WiiU">Nintendo Wii U</option>
                     <option value="Nintendo Wii">Nintendo Wii</option>
@@ -88,38 +105,40 @@ async function handleSubmit(event: Event) {
 
             <!-- Edition -->
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="edition">Edition</label>
-                <input required type="text" name="edition" id="edition" placeholder="Edition of the game" value="Standard">
+                <label class="text-xl font-semibold" for="edition">Edition</label>
+                <input required type="text" name="edition" id="edition" placeholder="Edition of the game"
+                    v-model="newGame.edition">
             </div>
 
             <!-- Region -->
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="region">Region</label>
-                <select name="region" id="region">
-                    <option required value="EUR">Europe</option>
-                    <option required value="USA">USA</option>
-                    <option required value="JPN">Japan</option>
-                    <option required value="FR">France</option>
-                    <option required value="INT">International</option>
-                    <option required value="OTHER">Other</option>
+                <label class="text-xl font-semibold" for="region">Region</label>
+                <select name="region" id="region" required v-model="newGame.region">
+                    <option value="EUR">Europe</option>
+                    <option value="USA">USA</option>
+                    <option value="JPN">Japan</option>
+                    <option value="FR">France</option>
+                    <option value="INT">International</option>
+                    <option value="OTHER">Other</option>
                 </select>
             </div>
 
             <!-- Released year -->
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="released_year">Game's released year</label>
-                <input required type="number" name="released_year" id="released_year" placeholder="2005">
+                <label class="text-xl font-semibold" for="released_year">Game's released year</label>
+                <input required type="number" name="released_year" id="released_year" placeholder="2005" min="1958"
+                    :max="new Date().getFullYear()" v-model="newGame.released_year">
             </div>
 
             <!-- Barcode_data -->
             <div class="flex flex-col gap-1">
-                <label class="font-semibold text-xl" for="barcode_data">Barcode data</label>
+                <label class="text-xl font-semibold" for="barcode_data">Barcode data</label>
                 <input required type="text" name="barcode_data" id="barcode_data" placeholder="Barcode data of the game"
-                    value="NODATA">
+                    v-model="newGame.barcode_data">
             </div>
 
             <button
-                class="font-semibold text-xl py-2 px-4 rounded-lg mt-4 bg-orange-300 hover:bg-orange-400 text-orange-800"
+                class="px-4 py-2 mt-4 text-xl font-semibold text-orange-800 bg-orange-300 rounded-lg hover:bg-orange-400"
                 type="submit">Save this new game</button>
         </form>
     </main>

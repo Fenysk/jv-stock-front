@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { config } from '../config';
+import { api_url } from '../config';
 
 export async function getPurchases(): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/purchase/get/all`);
+        const response = await axios.get(`${api_url}/purchase/get/all`);
         const purchases = response.data;
 
         return purchases;
@@ -14,7 +14,7 @@ export async function getPurchases(): Promise<any> {
 
 export async function getPurchaseById(id: number): Promise<any> {
     try {
-        const response = await axios.get(`${config.api.url}/purchase/get/${id}`);
+        const response = await axios.get(`${api_url}/purchase/get/${id}`);
         const purchase = response.data;
 
         return purchase;
@@ -25,7 +25,7 @@ export async function getPurchaseById(id: number): Promise<any> {
 
 export async function createPurchase(purchase: any): Promise<any> {
     try {
-        const response = await axios.post(`${config.api.url}/purchase/create`, purchase);
+        const response = await axios.post(`${api_url}/purchase/create`, purchase);
         const newPurchase = response.data;
 
         return newPurchase;
@@ -37,7 +37,7 @@ export async function createPurchase(purchase: any): Promise<any> {
 export async function updatePurchase(purchase: any): Promise<any> {
     try {
         console.log(purchase)
-        const response = await axios.put(`${config.api.url}/purchase/update/${purchase.id}`, purchase);
+        const response = await axios.put(`${api_url}/purchase/update/${purchase.id}`, purchase);
         const updatedPurchase = response.data;
 
         return updatedPurchase;
@@ -48,7 +48,7 @@ export async function updatePurchase(purchase: any): Promise<any> {
 
 export async function deletePurchase(id: string): Promise<any> {
     try {
-        const response = await axios.delete(`${config.api.url}/purchase/delete/${id}`);
+        const response = await axios.delete(`${api_url}/purchase/delete/${id}`);
         const deletedPurchase = response.data;
 
         return deletedPurchase;
