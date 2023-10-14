@@ -48,10 +48,10 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <main id="Sales" class="container mx-auto">
+    <main id="Sales" class="container p-2 mx-auto">
         <h1>Sales</h1>
 
-        <div id="controls" class="flex flex-row flex-wrap justify-between items-center gap-4">
+        <div id="controls" class="flex flex-row flex-wrap items-center justify-between gap-4">
             <div id="search" class="flex gap-2">
                 <input @input="searchSales(searchInput)" v-model="searchInput" type="text"
                     placeholder="Rechercher une vente" />
@@ -60,7 +60,7 @@ onBeforeMount(async () => {
         </div>
 
         <div id="games-list">
-            <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
+            <ul class="grid grid-cols-1 gap-2 mt-4 md:grid-cols-2 xl:grid-cols-3 md:gap-4 xl:gap-8">
                 <li v-for="sale in sales" :key="sale.id">
                     <Sale :sale="sale" />
                 </li>
@@ -69,9 +69,9 @@ onBeforeMount(async () => {
                 </li>
             </ul>
             <div v-if="sales.length === 0">
-                <p v-if="!isLoading && !isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">No
+                <p v-if="!isLoading && !isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">No
                     sales in stock</p>
-                <p v-if="isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">Can't fetch games</p>
+                <p v-if="isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">Can't fetch games</p>
             </div>
         </div>
     </main>

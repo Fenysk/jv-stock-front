@@ -3,16 +3,28 @@ import { updatePurchase, getPurchaseById, deletePurchase } from '../../services/
 import { getAllGames } from '../../services/games';
 import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
+import { api_url } from '../../config';
 
 const search = ref<string>('');
 const games = ref<any>([]);
 const router = useRouter();
 
 const inputContent = ref<string>('');
-const contents = ref<string[]>([]);
-const selectedGameId = ref<number | null>(null);
 
 const purchase = ref<any>({});
+const editedPurchase = ref<any>({});
+
+const contentsExample = ref([
+    'Cartouche',
+    'CD',
+    'Boîte',
+    'Notice',
+    'Safety sheet',
+    'Pub',
+    'Sticker',
+    'Map',
+    'Poster'
+]);
 
 onBeforeMount(async () => {
     const id = Number(router.currentRoute.value.params.id);
@@ -26,44 +38,55 @@ async function fetchGames() {
 
 async function fetchPurchase(id: number) {
     purchase.value = await getPurchaseById(id);
-    contents.value = purchase.value.content;
-    selectedGameId.value = purchase.value.game_id;
+    editedPurchase.value = {
+        id: purchase.value.id,
+        game_id: purchase.value.game_id,
+        purchased_price: purchase.value.purchased_price,
+        estimated_price: purchase.value.estimated_price,
+        origin: purchase.value.origin,
+        state: purchase.value.state,
+        content: purchase.value.content
+    };
+    contentsExample.value = contentsExample.value.filter((content: string) => {
+        return !editedPurchase.value.content.includes(content);
+    });
 }
 
-function searchGames() {
-    if (search.value.length > 0) {
-        games.value = games.value.filter((game: any) => {
-            return game.name
-                .toLowerCase()
-                .includes(search.value.toLowerCase());
-        });
-    } else {
-        fetchGames();
+async function searchGames() {
+
+    games.value = games.value.filter((game: any) => {
+        return game.name
+            .toLowerCase()
+            .includes(search.value.toLowerCase());
+    });
+
+    if (search.value === '') {
+        await fetchGames();
+        return;
     }
+
+    editedPurchase.value.game_id = games.value[0].id;
 }
 
 function addContent(content: string) {
-    contents.value.push(content);
-    inputContent.value = '';
+    if (content !== '') {
+        editedPurchase.value.content.push(content);
+        inputContent.value = '';
+        contentsExample.value.splice(contentsExample.value.indexOf(content), 1);
+    }
 }
 
-async function handleSubmit(event: Event) {
-    const form = event.target as HTMLFormElement;
-    const formData: any = new FormData(form);
+function removeContent(content: string) {
+    if (content !== '') {
+        editedPurchase.value.content.splice(editedPurchase.value.content.indexOf(content), 1);
+        contentsExample.value.push(content);
+    }
+}
 
-    console.log(formData);
-
-    let editedPurchase = {
-        ...Object.fromEntries(formData),
-        id: purchase.value.id,
-        game_id: Number(formData.get('game_id')),
-        purchased_price: Number(formData.get('purchased_price')),
-        estimated_price: Number(formData.get('estimated_price')),
-        content: contents.value
-    };
+async function handleSubmit() {
 
     try {
-        const purchase = await updatePurchase(editedPurchase);
+        const purchase = await updatePurchase(editedPurchase.value);
 
         if (purchase) {
             router.push({ name: 'Purchases' });
@@ -90,64 +113,97 @@ async function handleDelete() {
 </script>
 
 <template>
-    <div>
-        <h1>Edit purchase</h1>
+    <main id="EditPurchase">
+        <img v-if="editedPurchase.game_id"
+            :src="`${api_url}/${games.find((game: any) => game.id === editedPurchase.game_id).image_url}`"
+            class="object-cover w-full max-h-32 md:max-h-64">
 
-        <form @submit.prevent="handleSubmit">
-            <!-- Search game -->
-            <div class="flex gap-2 mb-4">
-                <label for="game">Game</label>
-                <input @input="searchGames" v-model="search" type="text" placeholder="Search for a game">
-                <select v-if="games.length" name="game_id" id="game_id" required v-model="selectedGameId">
-                    <option v-for="game in games" :key="game.id" :value="game.id">{{ game.name }}</option>
-                </select>
-                <span v-else>No game found</span>
-            </div>
+        <div class="container p-2 pb-8 mx-auto">
 
-            <!-- Purchased_price -->
-            <div class="flex gap-2 mb-4">
-                <label for="purchased_price">Purchased price</label>
-                <input required type="number" name="purchased_price" id="purchased_price"
-                    placeholder="Purchased price of the game" value="10">
-            </div>
+            <h1>Edit purchase</h1>
 
-            <!-- Estimated price -->
-            <div class="flex gap-2 mb-4">
-                <label for="estimated_price">Estimated price</label>
-                <input required type="number" name="estimated_price" id="estimated_price"
-                    placeholder="Estimated price of the game" value="20">
-            </div>
+            <form @submit.prevent="handleSubmit" class="flex flex-col gap-4 w-fit">
 
-            <!-- Origin -->
-            <div class="flex gap-2 mb-4">
-                <label for="origin">Origin</label>
-                <input required type="text" name="origin" id="origin" placeholder="Where did you buy the game?"
-                    value="Stock">
-            </div>
+                <!-- Search game -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="game">Game</label>
+                    <div class="flex flex-wrap gap-2">
+                        <input @input="searchGames" v-model="search" type="text" placeholder="Search for a game">
+                        <select v-if="games.length" name="game_id" id="game_id" v-model="editedPurchase.game_id" required>
+                            <option :selected="game.id" v-for="game in games" :key="game.id" :value="game.id">{{ game.name
+                            }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
 
-            <!-- State -->
-            <div class="flex gap-2 mb-4">
-                <label for="state">State</label>
-                <select required name="state" id="state">
-                    <option value="Mint">Mint</option>
-                    <option value="Very Good">Very good</option>
-                    <option value="Good" selected>Good</option>
-                    <option value="Average">Average</option>
-                    <option value="Bad">Bad</option>
-                    <option value="For parts">For parts</option>
-                </select>
-            </div>
 
-            <!-- Contents -->
-            <div class="flex gap-2 mb-4">
-                <label for="content">Content</label>
-                <input type="text" placeholder="Contents of the game" v-model="inputContent">
-                <button type="button" @click="addContent(inputContent)">Add</button>
-                <span v-for="content in contents" :key="content">{{ content }}</span>
-            </div>
+                <!-- Purchased_price -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="purchased_price">Purchased price</label>
+                    <input required type="number" name="purchased_price" id="purchased_price"
+                        placeholder="Purchased price of the game" v-model="editedPurchase.purchased_price">
+                </div>
 
-            <button type="submit">Save purchase</button>
-            <button type="button" @click.prevent="handleDelete">Delete purchase</button>
-        </form>
-    </div>
+                <!-- Estimated price -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="estimated_price">Estimated price</label>
+                    <input required type="number" name="estimated_price" id="estimated_price"
+                        placeholder="Estimated price of the game" v-model="editedPurchase.estimated_price">
+                </div>
+
+                <!-- Origin -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="origin">Origin</label>
+                    <input required type="text" name="origin" id="origin" placeholder="Origin of the game"
+                        v-model="editedPurchase.origin">
+                </div>
+
+                <!-- State -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="state">State</label>
+                    <select required name="state" id="state" v-model="editedPurchase.state">
+                        <option value="Mint">Mint</option>
+                        <option value="Very Good">Very good</option>
+                        <option value="Good" selected>Good</option>
+                        <option value="Average">Average</option>
+                        <option value="Bad">Bad</option>
+                        <option value="For parts">For parts</option>
+                    </select>
+                </div>
+
+                <!-- Contents -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="content">Contents</label>
+                    <!-- all example contents are displayed. When one is clicked, it is added to the list of contents -->
+                    <div class="flex flex-wrap gap-2">
+                        <span v-for="content in contentsExample" :key="content"
+                            class="px-2 py-1 text-sm font-semibold text-gray-500 bg-gray-300 rounded-lg cursor-pointer hover:bg-blue-600 hover:text-white"
+                            @click.prevent="addContent(content)">{{ content }}</span>
+                    </div>
+                    <!-- input and button -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <input v-model="inputContent" type="text" placeholder="Add a content">
+                        <button
+                            class="px-2 py-1 text-sm font-semibold text-white bg-orange-800 rounded-lg hover:bg-orange-700"
+                            @click.prevent="addContent(inputContent)">Add content</button>
+                    </div>
+                    <!-- the list of contents is displayed -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span v-for="content in editedPurchase.content" :key="content"
+                            class="px-2 py-1 text-sm font-semibold text-white bg-blue-500 rounded-lg cursor-pointer hover:bg-red-600"
+                            @click.prevent="removeContent(content)">{{ content }}</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between">
+                    <button
+                        class="px-4 py-2 mt-4 text-xl font-semibold text-orange-800 bg-orange-300 rounded-lg hover:bg-orange-400"
+                        type="submit">Save</button>
+                    <button class="px-4 py-2 mt-4 text-xl font-semibold text-red-800 bg-red-300 rounded-lg hover:bg-red-400"
+                        type="button" @click="handleDelete">Delete</button>
+                </div>
+            </form>
+        </div>
+    </main>
 </template>

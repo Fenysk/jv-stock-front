@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { createGame } from '../../services/games';
 import { uploadImage } from '../../services/upload';
 import { useRouter } from 'vue-router';
+import { api_url } from '../../config';
 
 const router = useRouter();
 
@@ -15,6 +16,8 @@ const newGame = ref({
     released_year: null,
     barcode_data: 'NODATA'
 })
+
+const isUploading = ref(false);
 
 async function handleUploadImage(event: Event) {
     try {
@@ -32,9 +35,12 @@ async function handleUploadImage(event: Event) {
             return;
         }
 
+        isUploading.value = true;
         const image_url = await uploadImage(image);
+        isUploading.value = false;
         newGame.value.image_url = image_url;
     } catch (error: any) {
+        isUploading.value = false;
         alert(error.message);
     }
 }
@@ -56,7 +62,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-    <main id="AddGame" class="container mx-auto">
+    <main id="AddGame" class="container p-2 pb-8 mx-auto">
         <h1>Add new game</h1>
 
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-4 w-fit">
@@ -64,9 +70,13 @@ async function handleSubmit() {
             <!-- Image -->
             <div class="flex flex-col gap-1">
                 <label class="text-xl font-semibold" for="image">Game's picture</label>
-                <input required type="file" accept="image/png, image/jpg, image/jpeg, image/gif, image/webp" name="image"
-                    id="image" @change="handleUploadImage">
-                <p v-if="newGame.image_url">File path : {{ newGame.image_url }}</p>
+                <div class="flex gap-2">
+                    <img v-if="newGame.image_url" :src="`${api_url}/${newGame.image_url}`" :alt="newGame.name"
+                        class="object-contain max-h-32">
+                    <p v-if="isUploading">Uploading...</p>
+                    <input required type="file" accept="image/png, image/jpg, image/jpeg, image/gif, image/webp"
+                        name="image" id="image" @change="handleUploadImage">
+                </div>
             </div>
 
             <div class="flex flex-col gap-1">

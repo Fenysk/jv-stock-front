@@ -17,10 +17,10 @@ props.purchase.created_at = new Date(props.purchase.created_at).toLocaleDateStri
 </script>
 
 <template>
-    <article class="flex flex-row bg-orange-100 overflow-hidden rounded-xl h-full shadow-sm border border-orange-200"
+    <article class="flex flex-row h-full overflow-hidden bg-orange-100 border border-orange-200 shadow-sm rounded-xl"
         :class="{ 'opacity-50': props.purchase.Sale }">
 
-        <div class="rounded-md flex w-1/4 h-full"> <!-- Left side -->
+        <div class="flex w-1/4 h-full rounded-md"> <!-- Left side -->
             <img :src="`${api_url}/${props.purchase.Game.image_url}`" alt="Game image"
                 class="object-cover w-full h-full">
         </div>
@@ -34,17 +34,17 @@ props.purchase.created_at = new Date(props.purchase.created_at).toLocaleDateStri
                         <span class="font-semibold">Acheté le {{ props.purchase.created_at }}</span><br>
                         Edition {{ props.purchase.Game.edition }}<br>
                         Etat : {{ props.purchase.state }}<br>
-                        Contient : {{ props.purchase.content.length }} éléments<br>
+                        Contient {{ props.purchase.content.length }} éléments<br>
                         {{ props.purchase.Game.console }}
                     </p>
                 </div>
 
-                <div id="prices" class="flex flex-col gap-1 items-end flex-none">
-                    <p class="bg-red-400    text-gray-600 px-2 py-1 rounded-lg font-semibold text-sm">- {{
+                <div id="prices" class="flex flex-col items-end flex-none gap-1">
+                    <p class="px-2 py-1 text-sm font-semibold text-gray-600 bg-red-400 rounded-lg">- {{
                         props.purchase.purchased_price }} €</p>
-                    <p class="bg-yellow-400 text-gray-600 px-2 py-1 rounded-lg font-semibold text-sm">+ {{
+                    <p class="px-2 py-1 text-sm font-semibold text-gray-600 bg-yellow-400 rounded-lg">+ {{
                         props.purchase.estimated_price }} €</p>
-                    <p class="bg-green-400  px-2 py-1 rounded-lg font-semibold text-sm">= {{
+                    <p class="px-2 py-1 text-sm font-semibold bg-green-400 rounded-lg">= {{
                         props.purchase.estimated_price -
                         props.purchase.purchased_price }} €</p>
                 </div>
@@ -52,10 +52,10 @@ props.purchase.created_at = new Date(props.purchase.created_at).toLocaleDateStri
 
             <div id="controls" v-if="!props.purchase.Sale" class="flex flex-row flex-wrap justify-end gap-1">
                 <router-link :to="{ name: 'EditPurchase', params: { id: props.purchase.id } }"
-                    class="bg-white whitespace-nowrap border px-2 hover:px-3 transition-all py-1 rounded-lg font-semibold text-sm">Edit
+                    class="px-2 py-1 text-sm font-semibold transition-all bg-white border rounded-lg whitespace-nowrap hover:px-3">Edit
                     caracteristics</router-link>
                 <router-link :to="{ name: 'AddSale', params: { id: props.purchase.id } }"
-                    class="bg-white whitespace-nowrap border px-2 hover:px-3 transition-all py-1 rounded-lg font-semibold text-sm">Mark
+                    class="px-2 py-1 text-sm font-semibold transition-all bg-white border rounded-lg whitespace-nowrap hover:px-3">Mark
                     as sold</router-link>
             </div>
         </div>

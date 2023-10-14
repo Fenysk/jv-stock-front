@@ -52,7 +52,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main id="Home" class="container mx-auto">
+  <main id="Home" class="container p-2 mx-auto">
     <h1>Home</h1>
 
     <section class="sales">
@@ -64,7 +64,7 @@ onBeforeMount(async () => {
       </div>
 
       <div id="games-list">
-        <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
+        <ul class="grid grid-cols-1 gap-2 mt-4 md:grid-cols-2 xl:grid-cols-3 md:gap-4 xl:gap-8">
           <li v-for="game in gamesInStock" :key="game.id">
             <Game :game="game" />
           </li>
@@ -73,9 +73,9 @@ onBeforeMount(async () => {
           </li>
         </ul>
         <div v-if="gamesInStock.length === 0">
-          <p v-if="!isLoading && !isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">No
+          <p v-if="!isLoading && !isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">No
             games in stock</p>
-          <p v-if="isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">Can't fetch games</p>
+          <p v-if="isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">Can't fetch games</p>
         </div>
       </div>
 

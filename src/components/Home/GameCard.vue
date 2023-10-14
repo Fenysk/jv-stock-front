@@ -9,6 +9,11 @@ const props = defineProps({
     }
 });
 
+props.game.created_at = new Date(props.game.created_at).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+});
 </script>
 
 <template>
@@ -23,9 +28,13 @@ const props = defineProps({
                 <div id="details" class="flex flex-col max-w-[70%]">
                     <h3 class="text-lg font-semibold truncate">{{ props.game.name }}</h3>
 
-                    <p class="text-sm">Edition {{ props.game.edition }}<br>
+                    <p class="text-sm">
+                        <span class="font-semibold">Acheté le {{ props.game.created_at }}</span><br>
+                        Edition {{ props.game.edition }}<br>
                         Etat : {{ props.game.state }}<br>
-                        {{ props.game.console }}</p>
+                        Contient {{ props.game.content.length }} éléments<br>
+                        {{ props.game.console }}
+                    </p>
                 </div>
 
                 <div id="prices" class="flex flex-col items-end flex-none gap-1">

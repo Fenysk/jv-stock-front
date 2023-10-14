@@ -4,26 +4,27 @@ import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
 
 const router = useRouter();
+
 const sale = ref<any>({});
+const editedSale = ref<any>({});
 
 onBeforeMount(async () => {
-    await fetchSale();
+    const id = Number(router.currentRoute.value.params.id);
+    await fetchSale(id);
 });
 
-async function fetchSale() {
-    const id = Number(router.currentRoute.value.params.id);
+async function fetchSale(id: number) {
     sale.value = await getSaleById(id);
+    editedSale.value = {
+        id: sale.value.id,
+        solded_price: sale.value.solded_price,
+    };
 }
 
-async function handleSubmit(event: Event) {
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    const sale_id = sale.value.id;
-    const solded_price = Number(formData.get('solded_price'));
+async function handleSubmit() {
 
     try {
-        const sale = await updateSaleSoldedPrice(sale_id, solded_price);
+        const sale = await updateSaleSoldedPrice(editedSale.value);
 
         if (sale) {
             router.push({ name: 'Sales' });
@@ -50,20 +51,30 @@ async function handleDelete() {
 </script>
 
 <template>
-    <div>
-        <h1>Add new sale</h1>
+    <main id="AddSale">
 
-        <form @submit.prevent="handleSubmit">
+        <div class="container p-2 pb-8 mx-auto">
+            <h1>Add new sale</h1>
 
-            <!-- Solded_price -->
-            <div class="flex gap-2 mb-4">
-                <label for="solded_price">Solded price</label>
-                <input required type="number" name="solded_price" id="solded_price" placeholder="Solded price of the game"
-                    :value="sale.solded_price">
-            </div>
+            <form @submit.prevent="handleSubmit">
 
-            <button type="submit">Save sale</button>
-            <button type="button" @click.prevent="handleDelete">Delete sale</button>
-        </form>
-    </div>
+                <!-- Solded_price -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="solded_price">Solded price</label>
+                    <input required type="number" name="solded_price" id="solded_price"
+                        placeholder="Solded price of the game" v-model="editedSale.solded_price">
+                </div>
+
+                <div class="flex">
+                    <button
+                        class="px-4 py-2 mt-4 text-xl font-semibold text-orange-800 bg-orange-300 rounded-lg hover:bg-orange-400"
+                        type="submit">Mark as sold</button>
+                    <button
+                        class="px-4 py-2 mt-4 ml-4 text-xl font-semibold text-red-800 bg-red-300 rounded-lg hover:bg-red-400"
+                        type="button" @click="handleDelete">Delete</button>
+
+                </div>
+            </form>
+        </div>
+    </main>
 </template>

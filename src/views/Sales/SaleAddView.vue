@@ -3,12 +3,19 @@ import { createSale } from '../../services/sales';
 import { getPurchaseById } from '../../services/purchases';
 import { useRouter } from 'vue-router';
 import { ref, onBeforeMount } from 'vue';
+import { api_url } from '../../config';
 
 const router = useRouter();
 const purchase = ref<any>({});
 
+const newSale = ref({
+    purchase_id: null,
+    solded_price: null,
+});
+
 onBeforeMount(async () => {
     await fetchPurchase();
+    newSale.value.purchase_id = purchase.value.id;
 });
 
 async function fetchPurchase() {
@@ -16,15 +23,7 @@ async function fetchPurchase() {
     purchase.value = await getPurchaseById(id);
 }
 
-async function handleSubmit(event: Event) {
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    let newSale = {
-        ...Object.fromEntries(formData),
-        purchase_id: purchase.value.id,
-        solded_price: Number(formData.get('solded_price')),
-    };
+async function handleSubmit() {
 
     try {
         const sale = await createSale(newSale);
@@ -40,19 +39,26 @@ async function handleSubmit(event: Event) {
 </script>
 
 <template>
-    <div>
-        <h1>Add new sale</h1>
+    <main id="AddSale">
+        <img v-if="purchase" :src="`${api_url}/${purchase.Game.image_url}`"
+            class="object-cover w-full max-h-32 md:max-h-64">
 
-        <form @submit.prevent="handleSubmit">
+        <div class="container p-2 pb-8 mx-auto">
+            <h1>Add new sale</h1>
 
-            <!-- Solded_price -->
-            <div class="flex gap-2 mb-4">
-                <label for="solded_price">Solded price</label>
-                <input required type="number" name="solded_price" id="solded_price" placeholder="Solded price of the game"
-                    value="30">
-            </div>
+            <form @submit.prevent="handleSubmit">
 
-            <button type="submit">Save sale</button>
-        </form>
-    </div>
+                <!-- Solded_price -->
+                <div class="flex flex-col items-start gap-1">
+                    <label class="text-xl font-semibold" for="solded_price">Solded price</label>
+                    <input required type="number" name="solded_price" id="solded_price"
+                        placeholder="Solded price of the game" v-model="newSale.solded_price">
+                </div>
+
+                <button
+                    class="px-4 py-2 mt-4 text-xl font-semibold text-orange-800 bg-orange-300 rounded-lg hover:bg-orange-400"
+                    type="submit">Mark as sold</button>
+            </form>
+        </div>
+    </main>
 </template>

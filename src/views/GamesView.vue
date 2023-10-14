@@ -52,21 +52,21 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <main id="Games" class="container mx-auto">
+    <main id="Games" class="container p-2 mx-auto">
         <h1>Games list</h1>
 
-        <div id="controls" class="flex flex-row flex-wrap justify-between items-center gap-4">
+        <div id="controls" class="flex flex-row flex-wrap items-center justify-between gap-4">
             <div id="search" class="flex gap-2">
                 <input @input="searchGames(searchInput)" v-model="searchInput" type="text"
                     placeholder="Rechercher un jeu" />
                 <button v-if="searchInput" @click="clearSearch">❌</button>
             </div>
-            <router-link :to="{ name: 'AddGame' }" class="bg-white py-2 px-4 rounded-md border shadow">➕ Add new
+            <router-link :to="{ name: 'AddGame' }" class="px-4 py-2 bg-white border rounded-md shadow">➕ Add new
                 game</router-link>
         </div>
 
         <div id="games-list">
-            <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4 xl:gap-8">
+            <ul class="grid grid-cols-1 gap-2 mt-4 md:grid-cols-2 xl:grid-cols-3 md:gap-4 xl:gap-8">
                 <li v-for="game in games" :key="game.id">
                     <Game :game="game" />
                 </li>
@@ -75,9 +75,9 @@ onBeforeMount(async () => {
                 </li>
             </ul>
             <div v-if="games.length === 0">
-                <p v-if="!isLoading && !isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">No
+                <p v-if="!isLoading && !isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">No
                     games in stock</p>
-                <p v-if="isError" class="text-center bg-red-100 text-red-500 p-4 rounded-md">Can't fetch games</p>
+                <p v-if="isError" class="p-4 text-center text-red-500 bg-red-100 rounded-md">Can't fetch games</p>
             </div>
         </div>
 

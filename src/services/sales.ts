@@ -34,9 +34,9 @@ export async function createSale(sale: any): Promise<any> {
     }
 }
 
-export async function updateSaleSoldedPrice(id: number, solded_price: number): Promise<any> {
+export async function updateSaleSoldedPrice(sale: any): Promise<any> {
     try {
-        const response = await axios.put(`${api_url}/sale/update/solded_price/${id}`, { solded_price });
+        const response = await axios.put(`${api_url}/sale/update/solded_price/${sale.id}`, sale);
         const updatedSale = response.data;
 
         return updatedSale;
@@ -49,7 +49,7 @@ export async function deleteSale(id: string): Promise<any> {
     try {
         const response = await axios.delete(`${api_url}/sale/delete/${id}`);
         const deletedSale = response.data;
-        
+
         return deletedSale;
     } catch (error) {
         throw error
