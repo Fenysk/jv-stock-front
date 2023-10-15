@@ -8,14 +8,14 @@ import { api_url } from '../../config';
 const router = useRouter();
 const purchase = ref<any>({});
 
-const newSale = ref({
+const newSale = ref<any>({
     purchase_id: null,
     solded_price: null,
 });
 
 onBeforeMount(async () => {
     await fetchPurchase();
-    newSale.value.purchase_id = purchase.value.id;
+    newSale.value.purchase_id = Number(router.currentRoute.value.params.id)
 });
 
 async function fetchPurchase() {
@@ -26,7 +26,7 @@ async function fetchPurchase() {
 async function handleSubmit() {
 
     try {
-        const sale = await createSale(newSale);
+        const sale = await createSale(newSale.value);
 
         if (sale) {
             router.push({ name: 'Sales' });
