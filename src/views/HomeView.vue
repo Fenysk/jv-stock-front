@@ -7,6 +7,7 @@ import LoadingGame from '../components/Common/LoadingGameCard.vue';
 const isLoading = ref<boolean>(false);
 const isError = ref<boolean>(false);
 const gamesInStock = ref<any>([]);
+const sort = ref<string>('date');
 
 async function fetchGamesInStock() {
   try {
@@ -45,8 +46,25 @@ function clearSearch() {
   fetchGamesInStock();
 }
 
+function sortGames(sort: string) {
+  if (sort === 'name') {
+    gamesInStock.value.sort((a: any, b: any) => {
+      return a.name.localeCompare(b.name);
+    });
+  } else if (sort === 'date') {
+    gamesInStock.value.sort((a: any, b: any) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  } else if (sort === 'value') {
+    gamesInStock.value.sort((a: any, b: any) => {
+      return (b.estimated_price - b.purchased_price) - (a.estimated_price - a.purchased_price);
+    });
+  }
+}
+
 onBeforeMount(async () => {
   await fetchGamesInStock();
+  sortGames(sort.value);
 });
 
 </script>
@@ -58,9 +76,19 @@ onBeforeMount(async () => {
     <section class="sales">
       <h2>Games in stock</h2>
 
-      <div id="search" class="flex gap-2">
-        <input @input="searchGames(searchInput)" v-model="searchInput" type="text" placeholder="Rechercher un jeu" />
-        <button v-if="searchInput" @click="clearSearch">❌</button>
+      <div id="controls" class="flex items-center gap-4">
+        <div id="search" class="flex items-center gap-2">
+          <input @input="searchGames(searchInput)" v-model="searchInput" type="text" placeholder="Rechercher un jeu" />
+          <button v-if="searchInput" @click="clearSearch">❌</button>
+        </div>
+        <div id="sort" class="flex items-center gap-2">
+          <label for="sort">Sort by</label>
+          <select name="sort" id="sort" v-model="sort" @change="sortGames(sort)">
+            <option value="date">Date</option>
+            <option value="name">Name</option>
+            <option value="value">Value</option>
+          </select>
+        </div>
       </div>
 
       <div id="games-list">
